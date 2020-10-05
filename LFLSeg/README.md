@@ -1,6 +1,14 @@
 ## Implementation of the LFLSeg Module for Segmenting Leaf Area
 
 ![Teaser image](Supplement_LFLSeg.png)
+The above image shows the heatmap visualization of our LFLSeg on different scenariors (full leaf, non-leaf, partial leaf).
+These heatmaps can be used as useful segmentation masks for training our LeafGAN model without the need of pixel-label data.
+LFLSeg works well on different in-ﬁeld images with complex backgrounds.
+However, when the images contain multiple and overlapping leaves, the LFLSeg fails to correctly segment the leaf area (last image of the "full leaf" cases).
+Also, LFLSeg may incorrectly detect "partial leaf" as "full leaf" if the "partial leaf" image has a different shooting distance than images in our training dataset (last column).
+### Suggestion
+Applying data augmentation techniques such as random resize/scale is expected to increase the robustness of this module and thus, boosting the performance of the system.
+
 ## Datasets
 Dataset will have 3 classes:
 - full leaf: image that contains a full leaf
