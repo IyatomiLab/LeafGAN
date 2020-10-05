@@ -9,7 +9,7 @@ When the images contain multiple and overlapping leaves, the LFLSeg fails to cor
 However, we do not expect the input which contains multiple leaves to be the case since we assume the input of the disease classifier is a single leaf image in this study.
 
 Also, LFLSeg may incorrectly detect "partial leaf" as "full leaf" if the "partial leaf" image has a different shooting distance than images in our training dataset (last column).
-Applying data augmentation techniques such as random resize/scale is expected to increase the robustness of this module.
+Applying data augmentation techniques such as random resize/scale is expected to increase the robustness of the model.
 
 ## Datasets
 Dataset will have 3 classes:
