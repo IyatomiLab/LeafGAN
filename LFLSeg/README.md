@@ -1,5 +1,6 @@
 ## Implementation of the LFLSeg Module for Segmenting Leaf Area
 
+![Teaser image](Supplement_LFLSeg.png)
 ## Datasets
 Dataset will have 3 classes:
 - full leaf: image that contains a full leaf
