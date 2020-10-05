@@ -1,7 +1,8 @@
 ## Implementation of the LFLSeg Module for Segmenting Leaf Area
 
 ![Teaser image](Supplement_LFLSeg.png)
-The above image shows the heatmap visualization of our LFLSeg on different scenariors (full leaf, non-leaf, partial leaf) with respect to the `full leaf` class. These heatmaps can be used as useful segmentation masks for training our LeafGAN model without the need of pixel-label data.
+The above image shows the heatmap visualization of our LFLSeg on different scenariors (full leaf, non-leaf, partial leaf) with respect to the `full leaf` class.  
+These heatmaps can be used as useful segmentation masks for training our LeafGAN model without the need of pixel-label data.
 LFLSeg works well on different in-ﬁeld images with complex backgrounds. 
 
 ### Extreme cases
