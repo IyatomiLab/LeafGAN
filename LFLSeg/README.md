@@ -1,12 +1,12 @@
 ## Implementation of the LFLSeg Module for Segmenting Leaf Area
 
 ![Teaser image](Supplement_LFLSeg.png)
-The above image shows the heatmap visualization of our LFLSeg on different scenariors (full leaf, non-leaf, partial leaf) with respect to the `full leaf` class.  
+The above image shows the heatmap visualization of our LFLSeg on different scenarios (full leaf, non-leaf, partial leaf) with respect to the `full leaf` class.  
 These heatmaps can be used as useful segmentation masks for training our LeafGAN model without the need of pixel-label data.
 LFLSeg works well on different in-ﬁeld images with complex backgrounds. 
 
 ### Extreme cases
-When the images contain multiple and overlapping leaves, the LFLSeg fails to correctly segment the leaf area (last image of the "full leaf" cases).
+When the images contain multiple and overlapping leaves, the LFLSeg fails to correctly segment the leaf area (last image of the `full leaf` cases).
 However, we do not expect the input which contains multiple leaves to be the case since we assume the input of the disease classifier is a single leaf image in this study.
 
 Also, LFLSeg may incorrectly detect `partial leaf` as `full leaf` if the `partial leaf` image has a different shooting distance than images in our training dataset (last column).
@@ -14,16 +14,16 @@ Applying data augmentation techniques such as random resize/scale is expected to
 
 ## Datasets
 Dataset will have 3 classes:
-- full leaf: image that contains a full leaf
-- partial leaf: image that contains a part of a full leaf
-- non-leaf: image that does not contain any part of a leaf
+- `full leaf`: image that contains a full leaf
+- `partial leaf`: image that contains a part of a full leaf
+- `non-leaf`: image that does not contain any part of a leaf
 
 For more details about how to create dataset, please refer to our paper.
 
 Please provide a `.txt` file that contain training info with label as follow:
-- full leaf: label 0
-- partial leaf: label 1
-- non-leaf: label 2
+- `full leaf`: label as 0
+- `partial leaf`: label as 1
+- `non-leaf`: label as 2
 ```
 /path/to/full_leaf/full_leaf_1.JPG, 0
 /path/to/full_leaf/full_leaf_2.png, 0
