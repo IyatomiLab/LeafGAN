@@ -48,7 +48,7 @@ Please provide a `.txt` file that contain training info with label as follow:
 python train_LFLSeg.py --train /path/to/train_data.txt --test /path/to/train_data.txt
 ```
 
-After training, please replace the trained model path at line 90 of the [leaf_gan_model.py](https://github.com/IyatomiLab/LeafGAN/blob/master/models/leaf_gan_model.py#L90)
+After training, please replace the trained model path at line 91 of the [leaf_gan_model.py](https://github.com/IyatomiLab/LeafGAN/blob/master/models/leaf_gan_model.py#L91)
 ```
 load_path = '/path/to/LFLSeg_model.pth'
 ```
