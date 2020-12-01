@@ -13,6 +13,9 @@ Also, LFLSeg may incorrectly detect `partial leaf` as `full leaf` if the `partia
 Applying data augmentation techniques such as random resize/scale is expected to increase the robustness of the model.
 
 ## Datasets
+The key idea of the LFLSeg is the introduction of the `partial leaf` class. `Partial leaf` images are created from `full leaf` images. From one single `full leaf` image, we crop 9 patches to create 9 images for `partial leaf` class as follows.
+![HowtoPartialLeaf](partial_leaf.png)
+
 Dataset will have 3 classes:
 - `full leaf`: image that contains a full leaf
 - `partial leaf`: image that contains a part of a full leaf
