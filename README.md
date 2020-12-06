@@ -1,6 +1,7 @@
 ## LeafGAN &mdash; Official Pytorch Implementation
 
-![Teaser image](Teaser.png)
+![Teaser image](media/Teaser.png)
+![Teaser image](media/Teaser_result.png)
 
 **LeafGAN: An Effective Data Augmentation Method for Practical Plant Disease Diagnosis**<br>
 Quan Huu Cap, Hiroyuki Uga, Satoshi Kagiwada, Hitoshi Iyatomi<br>
