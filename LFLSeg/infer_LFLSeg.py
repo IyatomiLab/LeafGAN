@@ -13,7 +13,7 @@ import sys
 sys.path.append("../models/")
 from grad_cam import GradCAM
 
-def save_gradcam(filename, gcam, raw_image, threshold=0.35, is_segment=False):
+def save_gradcam(save_path, gcam, raw_image, threshold=0.35, is_segment=False):
 	raw_image = np.asarray(raw_image)[:, :, ::-1].copy()
 	raw_image = cv2.resize(raw_image, (256, 256))
 	h, w, _ = raw_image.shape
@@ -33,14 +33,16 @@ def save_gradcam(filename, gcam, raw_image, threshold=0.35, is_segment=False):
 		foreground = foreground_mask * raw_image
 		foreground = foreground / foreground.max() * 255.0
 
-		cv2.imwrite(filename, np.uint8(foreground))
+		cv2.imwrite(save_path, np.uint8(foreground))
 	
 	else: # Just output the GradCAM heatmap with given threshold
 		gcam = gcam*(gcam>=threshold)
 		gcam = cv2.applyColorMap(np.uint8(gcam * 255.0), cv2.COLORMAP_JET)
 		gcam = gcam.astype(np.float) + raw_image.astype(np.float)
 		gcam = gcam / gcam.max() * 255.0
-		cv2.imwrite(filename, np.uint8(gcam))
+		cv2.imwrite(save_path, np.uint8(gcam))
+
+	print('Saved result at: %s' % save_path)
 	
 
 
@@ -51,10 +53,11 @@ model_names = sorted(
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--input", type=str, required=True, help='Input the image path')
+parser.add_argument("--output", type=str, default='output', help='where to save the result')
 parser.add_argument("--cuda", default=True, help='Use GPU or CPU?')
 parser.add_argument("--threshold", type=float, default=0.35, help='Use GPU or CPU?')
 parser.add_argument("--segment", action='store_true', help='Segment the leaf or not')
-parser.add_argument("--target_layer", default='layer4.2', help='Target layer of ResNet101 for generation GradCAM')
+parser.add_argument("--target_layer", default='layer4.2', help='Target layer of ResNet101 for generating GradCAM')
 
 
 args = parser.parse_args()
@@ -77,7 +80,8 @@ def main():
 	num_ftrs = LFLSeg_model.fc.in_features
 	LFLSeg_model.fc = nn.Linear(num_ftrs, 3) # Replace final layer with 3 outputs (full leaf, partial leaf, non-leaf)
 
-	load_path = '/data/quan/WorkSpace/ResNet_LeafGAN/trained_models/trained_resnet101_LFLSeg_v1_100.pth'
+	# Dowload the pretrained model: https://drive.google.com/drive/folders/1HqBYjUGXxl1eAkzhURoV5JAqWHvBvvTp?usp=sharing
+	load_path = '/path/to/LFLSeg_resnet101.pth'
 	LFLSeg_model.load_state_dict(torch.load(load_path), strict=True)
 
 	LFLSeg_model.to(device)
@@ -90,6 +94,10 @@ def main():
 		print("The image path doesn't exist!")
 		return
 	else:
+		# If output folder is not exists, create a new one
+		if not os.path.exists(args.output):
+			os.makedirs(args.output)
+
 		filename = os.path.basename(args.input)
 
 		raw_image = Image.open(args.input).convert('RGB')
@@ -106,7 +114,7 @@ def main():
 		gcam.backward(idx=0)
 		output = gcam.generate(target_layer=args.target_layer)
 
-		save_gradcam('{}_gcam.png'.format(filename[:-4]),
+		save_gradcam('{}/{}_gcam.png'.format(args.output, filename[:-4]),
 			output, raw_image, threshold=args.threshold, is_segment=args.segment)
 
 
