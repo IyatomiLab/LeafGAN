@@ -53,9 +53,27 @@ After training, please replace the trained model path at line 91 of the [leaf_ga
 load_path = '/path/to/LFLSeg_model.pth'
 ```
 
-## Test LFLSeg
+## Inference LFLSeg
 
-Coming soon ...
+The pretrained model of LFLSeg can be downloaded here: https://drive.google.com/drive/folders/1HqBYjUGXxl1eAkzhURoV5JAqWHvBvvTp?usp=sharing
+
+After downloading, please replace the trained model path at line 84 of the [infer_LFLSeg.py](https://github.com/IyatomiLab/LeafGAN/blob/master/LFLSeg/infer_LFLSeg.py#L84)
+```
+load_path = '/path/to/LFLSeg_resnet101.pth'
+```
+
+To get the GradCAM or the mask of `full leaf` image. Run the following command:
+
+```bash
+python infer_LFLSeg.py  --input /path/to/sing_full_leaf_image
+                        --segment #if not given, segment flag will be False
+                        --threshold #threshold value to get the masked image
+
+# For example
+python infer_LFLSeg.py  --input images/leaf_01.jpg --threshold 0.35 --segment
+```
+
+![LFLSeg_result](../media/LFLSeg_infer.png)
 
 ## Citation
 
@@ -63,8 +81,8 @@ Coming soon ...
 @article{cap2020leafgan,
   title   = {LeafGAN: An Effective Data Augmentation Method for Practical Plant Disease Diagnosis},
   author  = {Quan Huu Cap and Hiroyuki Uga and Satoshi Kagiwada and Hitoshi Iyatomi},
-  journal = {CoRR},
-  volume  = {abs/2002.10100},
+  journal = {IEEE Transactions on Automation Science and Engineering},
   year    = {2020},
+  doi     = {10.1109/TASE.2020.3041499}
 }
 ```
