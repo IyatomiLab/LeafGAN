@@ -67,7 +67,7 @@ To get the GradCAM or the mask of `full leaf` image. Run the following command:
 ```bash
 python infer_LFLSeg.py  --input /path/to/sing_full_leaf_image
                         --segment #if not given, segment flag will be False
-                        --threshold #threshold value to get the masked image
+                        --threshold #value to get the masked image ([0.0, 1.0]), please adjust on your purposes
 
 # For example
 python infer_LFLSeg.py  --input images/leaf_01.jpg --threshold 0.35 --segment
