@@ -46,9 +46,9 @@ python test.py --dataroot /path/to/healthy2brownspot --name healthy2brownspot_le
 @article{cap2020leafgan,
   title   = {LeafGAN: An Effective Data Augmentation Method for Practical Plant Disease Diagnosis},
   author  = {Quan Huu Cap and Hiroyuki Uga and Satoshi Kagiwada and Hitoshi Iyatomi},
-  journal = {CoRR},
-  volume  = {abs/2002.10100},
+  journal = {IEEE Transactions on Automation Science and Engineering},
   year    = {2020},
+  doi     = {10.1109/TASE.2020.3041499}
 }
 ```
 
