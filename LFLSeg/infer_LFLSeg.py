@@ -55,7 +55,7 @@ parser = argparse.ArgumentParser()
 parser.add_argument("--input", type=str, required=True, help='Input the image path')
 parser.add_argument("--output", type=str, default='output', help='where to save the result')
 parser.add_argument("--cuda", default=True, help='Use GPU or CPU?')
-parser.add_argument("--threshold", type=float, default=0.35, help='Use GPU or CPU?')
+parser.add_argument("--threshold", type=float, default=0.35, help='threshold value (between 0.0 to 1.0) for segmentation')
 parser.add_argument("--segment", action='store_true', help='Segment the leaf or not')
 parser.add_argument("--target_layer", default='layer4.2', help='Target layer of ResNet101 for generating GradCAM')
 
