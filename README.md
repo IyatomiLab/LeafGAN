@@ -18,7 +18,7 @@ Tutorial of how to create dataset and train the LFLSeg module is available in th
 ![LFLSeg_result](media/LFLSeg_infer.png)
 
 ## Datasets
-A dataset will have 4 directories for two domains A (TrainA, TestA) and B (TrainB, TestB). Each directory must contain only images (no other file types).
+A dataset will have 4 directories for two domains A (trainA, testA) and B (trainB, testB). Each directory must contain only images (no other file types).
 For example of the dataset named `healthy2brownspot`
 ```bash
 /path/to/healthy2brownspot/trainA
