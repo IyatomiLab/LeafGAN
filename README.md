@@ -21,10 +21,10 @@ Tutorial of how to create dataset and train the LFLSeg module is available in th
 A dataset will have 4 directories for two domains A (TrainA, TestA) and B (TrainB, TestB). Each directory must contain only images (no other file types).
 For example of the dataset named `healthy2brownspot`
 ```bash
-/path/to/healthy2brownspot/TrainA
-/path/to/healthy2brownspot/TestA
-/path/to/healthy2brownspot/TrainB
-/path/to/healthy2brownspot/TestB
+/path/to/healthy2brownspot/trainA
+/path/to/healthy2brownspot/testA
+/path/to/healthy2brownspot/trainB
+/path/to/healthy2brownspot/testB
 ```
 
 ## LeafGAN/CycleGAN train/test
