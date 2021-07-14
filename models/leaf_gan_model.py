@@ -162,35 +162,46 @@ class LeafGANModel(BaseModel):
 
 	def forward(self):
 		"""Run forward pass; called by both functions <optimize_parameters> and <test>."""
-		self.background_real_A, self.foreground_real_A = self.get_masking(self.real_A, self.opt.threshold)
-		self.background_real_B, self.foreground_real_B = self.get_masking(self.real_B, self.opt.threshold)
-		## To save the segmented results, use save_image
-		# self.save_image(self.background_real_A, 'saved_img/masked_background_real_A.png')
-		# self.save_image(self.foreground_real_A, 'saved_img/masked_foreground_real_A.png')
+		# For training
+		if(self.isTrain):
+			self.background_real_A, self.foreground_real_A = self.get_masking(self.real_A, self.opt.threshold)
+			self.background_real_B, self.foreground_real_B = self.get_masking(self.real_B, self.opt.threshold)
+			## To save the segmented results, use save_image
+			# self.save_image(self.background_real_A, 'saved_img/masked_background_real_A.png')
+			# self.save_image(self.foreground_real_A, 'saved_img/masked_foreground_real_A.png')
 
-		# Fore real_A input
-		self.fake_B = self.netG_A(self.real_A)  # G_A(A)
+			# Fore real_A input
+			self.fake_B = self.netG_A(self.real_A)  # G_A(A)
 
-		# multyple the fore/baclground masking of real_A to fake_B to get fore/background of fake_B
-		self.fore_fake_B = self.foreground_real_A * self.fake_B
-		self.back_fake_B = self.background_real_A * self.fake_B
+			# multyple the fore/baclground masking of real_A to fake_B to get fore/background of fake_B
+			self.fore_fake_B = self.foreground_real_A * self.fake_B
+			self.back_fake_B = self.background_real_A * self.fake_B
 
-		self.fore_real_B = self.foreground_real_B * self.real_B
-		self.back_real_B = self.background_real_B * self.real_B
+			self.fore_real_B = self.foreground_real_B * self.real_B
+			self.back_real_B = self.background_real_B * self.real_B
 
-		self.rec_A = self.netG_B(self.fake_B)   # G_B(G_A(A))
+			self.rec_A = self.netG_B(self.fake_B)   # G_B(G_A(A))
 
-		# For real_B input
-		self.fake_A = self.netG_B(self.real_B)  # G_B(B)
+			# For real_B input
+			self.fake_A = self.netG_B(self.real_B)  # G_B(B)
 
-		# multyple the fore/baclground masking of real_B to fake_A to get fore/background of fake_A
-		self.fore_fake_A = self.foreground_real_B * self.fake_A
-		self.back_fake_A = self.background_real_B * self.fake_A
+			# multyple the fore/baclground masking of real_B to fake_A to get fore/background of fake_A
+			self.fore_fake_A = self.foreground_real_B * self.fake_A
+			self.back_fake_A = self.background_real_B * self.fake_A
 
-		self.fore_real_A = self.foreground_real_A * self.real_A
-		self.back_real_A = self.background_real_A * self.real_A
+			self.fore_real_A = self.foreground_real_A * self.real_A
+			self.back_real_A = self.background_real_A * self.real_A
 
-		self.rec_B = self.netG_A(self.fake_A)   # G_A(G_B(B))
+			self.rec_B = self.netG_A(self.fake_A)   # G_A(G_B(B))
+		# For testing, no need to load LFLSeg module
+		else:
+			# Fore real_A input
+			self.fake_B = self.netG_A(self.real_A)  # G_A(A)
+			self.rec_A = self.netG_B(self.fake_B)   # G_B(G_A(A))
+
+			# For real_B input
+			self.fake_A = self.netG_B(self.real_B)  # G_B(B)
+			self.rec_B = self.netG_A(self.fake_A)   # G_A(G_B(B))
 
 	def backward_D_basic(self, netD, real, fake):
 		"""Calculate GAN loss for the discriminator
