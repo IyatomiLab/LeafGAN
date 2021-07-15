@@ -128,9 +128,10 @@ class LeafGANModel(BaseModel):
 		foreground_mask =  heat_map>=threshold
 		foreground_mask = np.stack((foreground_mask, foreground_mask, foreground_mask), axis=2)
 
-		# return background_mask.astype(np.uint8), foreground_mask.astype(np.uint8)
-		background_mask = background_mask.astype(np.float32).transpose(2,1,0)
-		foreground_mask = foreground_mask.astype(np.float32).transpose(2,1,0)
+		# from numpy image: H x W x C to torch image: C x H x W
+		background_mask = background_mask.astype(np.float32).transpose(2,0,1)
+		foreground_mask = foreground_mask.astype(np.float32).transpose(2,0,1)
+		
 		return torch.from_numpy(background_mask).unsqueeze(0).to(self.device), torch.from_numpy(foreground_mask).unsqueeze(0).to(self.device)
 
 	def to_numpy(self, tensor):
