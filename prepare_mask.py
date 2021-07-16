@@ -68,7 +68,10 @@ def get_heatmap(model, loader, device):
 def save_heatmap(heatmaps, paths, out_dir, image_size, threshold):
     for heatmap, p in zip(heatmaps, paths):
         mask = cv2.resize(heatmap, dsize=(image_size, image_size))
-        mask = (heatmap >= threshold).astype(np.float32)
+        mask = (mask >= threshold).astype(int)
+        import pdb
+
+        pdb.set_trace()
         mask = np.repeat(mask[:, :, np.newaxis], 3, axis=2) * 255
         mask_img = Image.fromarray(mask.astype(np.uint8))
         mask_img.save(out_dir / p.name)
@@ -91,23 +94,23 @@ def main():
     # setup mask data folder
     data_root = Path(opt.source)
     dataset_dirs = [p for p in data_root.glob("*") if "mask" not in str(p)]
-    mask_dataset_dirs=[]
+    mask_dataset_dirs = []
     for data_dir in dataset_dirs:
-        out_dir=data_root / f"{data_dir.name}_mask"
+        out_dir = data_root / f"{data_dir.name}_mask"
         out_dir.mkdir(exist_ok=True)
         mask_dataset_dirs.append(out_dir)
 
     # get_mask
     for source_dir, out_dir in zip(dataset_dirs, mask_dataset_dirs):
         print(f"##### {source_dir.name} #####")
-        paths=list(source_dir.glob("*"))
-        loader=torch.utils.data.DataLoader(
+        paths = list(source_dir.glob("*"))
+        loader = torch.utils.data.DataLoader(
             MyDataset(paths, opt.image_size),
             shuffle=False,
             batch_size=1,
             num_workers=1,
         )
-        heatmaps=get_heatmap(netLFLSeg, loader, device)
+        heatmaps = get_heatmap(netLFLSeg, loader, device)
         save_heatmap(heatmaps, paths, out_dir, opt.image_size, opt.threshold)
 
     print("done")
