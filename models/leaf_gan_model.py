@@ -1,16 +1,18 @@
+import itertools
+
+import cv2
+import numpy as np
 import torch
-from torchvision import models, transforms
 import torch.nn as nn
 import torch.nn.functional as F
-import itertools
-from util.image_pool import ImagePool
-from .base_model import BaseModel
-from . import networks
-
-from .grad_cam import GradCAM
-import cv2
 from PIL import Image
-import numpy as np
+from torchvision import models, transforms
+from util.image_pool import ImagePool
+
+from . import networks
+from .base_model import BaseModel
+from .grad_cam import GradCAM
+
 
 class LeafGANModel(BaseModel):
 	"""
@@ -82,20 +84,25 @@ class LeafGANModel(BaseModel):
 											opt.n_layers_D, opt.norm, opt.init_type, opt.init_gain, self.gpu_ids)
 			self.netD_B = networks.define_D(opt.input_nc, opt.ndf, opt.netD,
 											opt.n_layers_D, opt.norm, opt.init_type, opt.init_gain, self.gpu_ids)
-			# define the LFLSeg module
-			######################################################
-			self.segResNet = models.resnet101()
-			num_ftrs = self.segResNet.fc.in_features
-			self.segResNet.fc = nn.Linear(num_ftrs, 3) # Replace final layer with 3 outputs (full leaf, partial leaf, non-leaf)
 
-			load_path = '/path/to/LFLSeg_model.pth'
-			self.segResNet.load_state_dict(torch.load(load_path), strict=True)
-			self.segResNet.to(self.device)
-			self.segResNet.eval()
-			# self.segResNet = torch.nn.DataParallel(self.segResNet, self.gpu_ids)
+                        self.is_using_mask = opt.dataset_mode == "unaligned_masked"
+                        if not self.is_using_mask:
+                                # define the LFLSeg module
+                                ######################################################
+                                self.segResNet = models.resnet101()
+                                num_ftrs = self.segResNet.fc.in_features
+                                self.segResNet.fc = nn.Linear(
+                                    num_ftrs, 3
+                                )  # Replace final layer with 3 outputs (full leaf, partial leaf, non-leaf)
 
-			self.netLFLSeg = GradCAM(model=self.segResNet)
-			######################################################
+                                load_path = "tmp/LFLSeg_resnet101.pth"
+                                self.segResNet.load_state_dict(torch.load(load_path), strict=True)
+                                self.segResNet.to(self.device)
+                                self.segResNet.eval()
+                                # self.segResNet = torch.nn.DataParallel(self.segResNet, self.gpu_ids)
+
+                                self.netLFLSeg = GradCAM(model=self.segResNet)
+                                ######################################################
 
 		if self.isTrain:
 			if opt.lambda_identity > 0.0:  # only works when input and output images have the same number of channels
@@ -131,7 +138,7 @@ class LeafGANModel(BaseModel):
 		# from numpy image: H x W x C to torch image: C x H x W
 		background_mask = background_mask.astype(np.float32).transpose(2,0,1)
 		foreground_mask = foreground_mask.astype(np.float32).transpose(2,0,1)
-		
+
 		return torch.from_numpy(background_mask).unsqueeze(0).to(self.device), torch.from_numpy(foreground_mask).unsqueeze(0).to(self.device)
 
 	def to_numpy(self, tensor):
@@ -161,15 +168,28 @@ class LeafGANModel(BaseModel):
 		self.real_B = input['B' if AtoB else 'A'].to(self.device)
 		self.image_paths = input['A_paths' if AtoB else 'B_paths']
 
+                if self.is_using_mask:
+                        self.foreground_real_A = input["mask_A" if AtoB else "mask_B"].to(self.device)
+                        self.foreground_real_B = input["mask_B" if AtoB else "mask_A"].to(self.device)
+                        with torch.no_grad():
+                                self.background_real_A = torch.absolute(1.0 - self.foreground_real_A)
+                                self.background_real_B = torch.absolute(1.0 - self.foreground_real_B)
+
+
 	def forward(self):
 		"""Run forward pass; called by both functions <optimize_parameters> and <test>."""
 		# For training
 		if(self.isTrain):
-			self.background_real_A, self.foreground_real_A = self.get_masking(self.real_A, self.opt.threshold)
-			self.background_real_B, self.foreground_real_B = self.get_masking(self.real_B, self.opt.threshold)
-			## To save the segmented results, use save_image
-			# self.save_image(self.background_real_A, 'saved_img/masked_background_real_A.png')
-			# self.save_image(self.foreground_real_A, 'saved_img/masked_foreground_real_A.png')
+                        if not self.is_using_mask:
+                                self.background_real_A, self.foreground_real_A = self.get_masking(
+                                    self.real_A, self.opt.threshold
+                                )
+                                self.background_real_B, self.foreground_real_B = self.get_masking(
+                                    self.real_B, self.opt.threshold
+                                )
+                                # To save the segmented results, use save_image
+                                # self.save_image(self.background_real_A, 'saved_img/masked_background_real_A.png')
+                                # self.save_image(self.foreground_real_A, 'saved_img/masked_foreground_real_A.png')
 
 			# Fore real_A input
 			self.fake_B = self.netG_A(self.real_A)  # G_A(A)

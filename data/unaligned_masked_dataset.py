@@ -27,7 +27,9 @@ class TransformWithMask:
     def random_crop(self, img, mask):
         x = random.randint(0, np.maximum(0, self.load_size - self.crop_size))
         y = random.randint(0, np.maximum(0, self.load_size - self.crop_size))
-        return img[:, x : x + self.crop_size, y : y + self.crop_size]
+        cropped_img = img[:, x : x + self.crop_size, y : y + self.crop_size]
+        cropped_mask = mask[:, x : x + self.crop_size, y : y + self.crop_size]
+        return cropped_img, cropped_mask
 
     def __call__(self, img, mask):
         if self.grayscale is not None:
@@ -133,8 +135,8 @@ class UnalignedMaskedDataset(BaseDataset):
         return {
             "A": A,
             "B": B,
-            "A_mask": A_mask,
-            "B_mask": B_mask,
+            "mask_A": A_mask,
+            "mask_B": B_mask,
             "A_paths": A_path,
             "B_paths": B_path,
         }
