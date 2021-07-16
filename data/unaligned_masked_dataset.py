@@ -13,13 +13,11 @@ class TransformWithMask:
     def __init__(self, opt, grayscale, method=Image.BICUBIC):
         self.grayscale = transforms.Grayscale(1) if grayscale else None
         self.resize = transforms.Resize((opt.load_size, opt.load_size), method)
-        self.to_tensor = transforms.Compose(
-            [
-                transforms.ToTensor(),
-                transforms.Normalize((0.5,), (0.5,))
-                if grayscale
-                else transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
-            ]
+        self.to_tensor = transforms.ToTensor()
+        self.normalize = (
+            transforms.Normalize((0.5,), (0.5,))
+            if grayscale
+            else transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
         )
         self.crop_size = opt.crop_size
         self.load_size = opt.load_size
@@ -36,6 +34,7 @@ class TransformWithMask:
             img = self.grayscale(img)
             mask = self.grayscale(mask)
         img = self.to_tensor(self.resize(img))
+        img = self.normalize(img)
         mask = self.to_tensor(self.resize(mask))
         img, mask = self.random_crop(img, mask)
         return img, mask

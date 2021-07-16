@@ -67,8 +67,8 @@ def get_heatmap(model, loader, device):
 
 def save_heatmap(heatmaps, paths, out_dir, image_size, threshold):
     for heatmap, p in zip(heatmaps, paths):
-        mask = (heatmap >= threshold).astype(np.float32)
         mask = cv2.resize(heatmap, dsize=(image_size, image_size))
+        mask = (heatmap >= threshold).astype(np.float32)
         mask = np.repeat(mask[:, :, np.newaxis], 3, axis=2) * 255
         mask_img = Image.fromarray(mask.astype(np.uint8))
         mask_img.save(out_dir / p.name)
