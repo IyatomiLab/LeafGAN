@@ -69,9 +69,6 @@ def save_heatmap(heatmaps, paths, out_dir, image_size, threshold):
     for heatmap, p in zip(heatmaps, paths):
         mask = cv2.resize(heatmap, dsize=(image_size, image_size))
         mask = (mask >= threshold).astype(int)
-        import pdb
-
-        pdb.set_trace()
         mask = np.repeat(mask[:, :, np.newaxis], 3, axis=2) * 255
         mask_img = Image.fromarray(mask.astype(np.uint8))
         mask_img.save(out_dir / p.name)

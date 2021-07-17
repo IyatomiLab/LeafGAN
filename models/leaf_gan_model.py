@@ -95,7 +95,7 @@ class LeafGANModel(BaseModel):
                                     num_ftrs, 3
                                 )  # Replace final layer with 3 outputs (full leaf, partial leaf, non-leaf)
 
-                                load_path = "tmp/LFLSeg_resnet101.pth"
+                                load_path = "/path/to/LFLSeg_model.pth"
                                 self.segResNet.load_state_dict(torch.load(load_path), strict=True)
                                 self.segResNet.to(self.device)
                                 self.segResNet.eval()
