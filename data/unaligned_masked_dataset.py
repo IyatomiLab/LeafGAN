@@ -37,7 +37,7 @@ class TransformWithMask:
         img = self.normalize(img)
         mask = self.to_tensor(self.resize(mask))
         # convert float to binary
-        mask = (mask > 0.5).float()
+        mask = (mask >= 0.5).float()
         img, mask = self.random_crop(img, mask)
         return img, mask
 
