@@ -12,26 +12,42 @@ Abstract: *Many applications for the automated diagnosis of plant disease have b
 
 
 ![Teaser image](media/Teaser_result.png)
+## New Features
+
+- Jul 25, 2021: Added a new option to load the mask images from disk. Running the LFLSeg module during training is quite slow. Instead, we can generate the masks of all training images beforehand and load it during training. Refer to [prepare_mask.py](https://github.com/IyatomiLab/LeafGAN/blob/master/util/prepare_mask.py) of how to generate mask images from the pre-trained LFLSeg, and the [unaligned_masked_dataset.py](https://github.com/IyatomiLab/LeafGAN/blob/master/data/unaligned_masked_dataset.py) of how to load the mask images. See below of how to train with this new feature.
+
 ## LFLSeg module
 Tutorial of how to create dataset and train the LFLSeg module is available in the [LFLSeg](https://github.com/IyatomiLab/LeafGAN/tree/master/LFLSeg)
 
 ![LFLSeg_result](media/LFLSeg_infer.png)
 
 ## Datasets
-A dataset will have 4 directories for two domains A (trainA, testA) and B (trainB, testB). Each directory must contain only images (no other file types).
-For example of the dataset named `healthy2brownspot`
+- Normal dataset: A normal dataset will have 4 directories for two domains A (trainA, testA) and B (trainB, testB). Each directory must contain only images (no other file types).
+An example of the dataset named `healthy2brownspot`
 ```bash
 /path/to/healthy2brownspot/trainA
 /path/to/healthy2brownspot/testA
 /path/to/healthy2brownspot/trainB
 /path/to/healthy2brownspot/testB
 ```
-
+- Masked dataset: This dataset is normal dataset + pre-generated mask images. First, you need to generate your own mask images using the [prepare_mask.py](https://github.com/IyatomiLab/LeafGAN/blob/master/util/prepare_mask.py). An example of the masked dataset named `healthy2brownspot_mask`
+```bash
+/path/to/healthy2brownspot/trainA
+/path/to/healthy2brownspot/trainA_mask # mask images of trainA
+/path/to/healthy2brownspot/testA
+/path/to/healthy2brownspot/trainB
+/path/to/healthy2brownspot/trainB_mask # mask images of trainB
+/path/to/healthy2brownspot/testB
+```
 ## LeafGAN/CycleGAN train/test
 - Make sure to prepare the dataset first
 - Train a model (example with the dataset `healthy2brownspot`):
 ```bash
 python train.py --dataroot /path/to/healthy2brownspot --name healthy2brownspot_leafGAN --model leaf_gan
+```
+- Train model with mask images (example with the dataset `healthy2brownspot_mask`):
+```bash
+python train.py --dataroot /path/to/healthy2brownspot --name healthy2brownspot_leafGAN --model leaf_gan --dataset_mode unaligned_masked
 ```
 To see more intermediate results, check out `./checkpoints/healthy2brownspot_leafGAN/web/index.html`.
 - Test the model:
