@@ -8,4 +8,4 @@ scipy>=1.5.0
 scikit_image>=0.17.2
 numpy>=1.18.0
 Pillow>=5.4.0
-skimage>=0.0
+skimage>=0.16.1
