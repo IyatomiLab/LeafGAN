@@ -55,7 +55,7 @@ load_path = '/path/to/LFLSeg_model.pth'
 
 ## Inference LFLSeg
 
-The pretrained model of LFLSeg can be downloaded here: https://drive.google.com/drive/folders/1HqBYjUGXxl1eAkzhURoV5JAqWHvBvvTp?usp=sharing
+The pretrained model of LFLSeg can be downloaded here: [https://www.dropbox.com/scl/fi/h0t2dq5rtogxvp9ufglkj/LFLSeg_resnet101.pth?rlkey=noxfamgq5387y2hbvhjirrf7j&dl=0](https://www.dropbox.com/scl/fi/h0t2dq5rtogxvp9ufglkj/LFLSeg_resnet101.pth?rlkey=noxfamgq5387y2hbvhjirrf7j&dl=0)
 
 After downloading, please replace the trained model path at line 84 of the [infer_LFLSeg.py](https://github.com/IyatomiLab/LeafGAN/blob/master/LFLSeg/infer_LFLSeg.py#L84)
 ```
